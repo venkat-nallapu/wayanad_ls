@@ -1,0 +1,6 @@
+zone_id,zone,area_pct,val_slides_count,val_slides_pct,density_ratio
+1,Very Low,28.28,0,0.0,0.0
+2,Low,26.91,4,6.56,0.24
+3,Moderate,21.07,5,8.2,0.39
+4,High,18.37,17,27.87,1.52
+5,Very High,5.37,35,57.38,10.69

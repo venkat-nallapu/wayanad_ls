@@ -1,0 +1,28 @@
+# Virtual environment & Python cache
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ipynb_checkpoints/
+.ruff_cache/
+
+# Raw archives & heavy raw/intermediate float32 rasters (reproducible via scripts/01..04)
+rasters_COP30.tar.gz
+data/raw/dem/*.tif
+data/raw/osm/wayanad_roads.geojson
+data/processed/master/dem_30m.tif
+data/processed/factors_continuous/*.tif
+data/processed/aspect.tif
+data/processed/curv.tif
+data/processed/dem.tif
+data/processed/slope.tif
+data/processed/d_road.tif
+data/processed/d_stream.tif
+data/processed/dist_roads.tif
+data/processed/dist_streams.tif
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+*.swp

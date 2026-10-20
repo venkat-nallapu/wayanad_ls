@@ -1,0 +1,6 @@
+zone_id,zone,lsi_range,cell_count,area_km2,area_pct,train_slides,train_slide_pct,val_slides,val_slide_pct,total_slides,total_slide_pct,train_density_per_km2,val_density_per_km2,total_density_per_km2,density_ratio
+1,Very Low,< 4.86,668817,601.94,28.28,3,2.1,0,0.0,3,1.47,0.005,0.0,0.005,0.05
+2,Low,4.86 - 6.00,636521,572.87,26.91,13,9.09,4,6.56,17,8.33,0.0227,0.007,0.0297,0.31
+3,Moderate,6.00 - 7.15,498246,448.42,21.07,13,9.09,5,8.2,18,8.82,0.029,0.0112,0.0401,0.42
+4,High,7.15 - 8.74,434513,391.06,18.37,53,37.06,17,27.87,70,34.31,0.1355,0.0435,0.179,1.87
+5,Very High,>= 8.74,126933,114.24,5.37,61,42.66,35,57.38,96,47.06,0.534,0.3064,0.8403,8.77

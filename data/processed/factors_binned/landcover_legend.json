@@ -1,0 +1,42 @@
+{
+  "esa_to_contiguous": {
+    "10": 1,
+    "20": 2,
+    "30": 3,
+    "40": 4,
+    "50": 5,
+    "60": 6,
+    "80": 7,
+    "90": 8
+  },
+  "contiguous_to_esa": {
+    "1": 10,
+    "2": 20,
+    "3": 30,
+    "4": 40,
+    "5": 50,
+    "6": 60,
+    "7": 80,
+    "8": 90
+  },
+  "contiguous_to_name": {
+    "1": "Tree cover",
+    "2": "Shrubland",
+    "3": "Grassland",
+    "4": "Cropland",
+    "5": "Built-up",
+    "6": "Bare / sparse vegetation",
+    "7": "Permanent water bodies",
+    "8": "Herbaceous wetland"
+  },
+  "esa_legend": {
+    "10": "Tree cover",
+    "20": "Shrubland",
+    "30": "Grassland",
+    "40": "Cropland",
+    "50": "Built-up",
+    "60": "Bare / sparse vegetation",
+    "80": "Permanent water bodies",
+    "90": "Herbaceous wetland"
+  }
+}

@@ -1,0 +1,10 @@
+metric,value,sample_size,benchmark
+Success Rate ROC-AUC (Train),0.8527,143 pos / 143 neg,> 0.80
+Prediction Rate ROC-AUC (Val),0.8965,61 pos / 61 neg,> 0.80
+Cumulative Success Rate AUC,0.8493,"2,365,030 pixels",> 0.80
+Cumulative Prediction Rate AUC,0.8937,"2,365,030 pixels",> 0.80
+Validation Slides in Top 20% Area (%),83.61,61 val slides,> 70.0%
+Validation Slides in Top 30% Area (%),91.8,61 val slides,> 80.0%
+2024 Chooralmala Disaster LSI,8.0996,"11.543°N, 76.155°E",Top decile
+2024 Chooralmala District Percentile,89.94,"2,365,030 pixels",> 80th %ile
+2024 Chooralmala Susceptibility Zone,High,Zone ID 4,High / Very High

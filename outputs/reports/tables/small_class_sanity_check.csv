@@ -1,0 +1,7 @@
+factor,bin,class_label,pixels,area_pct,slides,FR
+slope,5,>40 deg (Very steep),10214,0.431876128421204,0,0.0
+aspect,9,Flat (Slope < 1 deg),73688,3.115732147160924,1,0.2244418538794828
+landcover,4,Cropland,71037,3.0036405457858883,0,0.0
+landcover,6,Bare / sparse vegetation,241,0.0101901455795486,0,0.0
+landcover,7,Permanent water bodies,14181,0.5996118442472188,0,0.0
+landcover,8,Herbaceous wetland,93,0.0039322968419005,0,0.0
