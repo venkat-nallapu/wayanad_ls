@@ -249,8 +249,8 @@ def classify_susceptibility_zones():
     (TABLES_DIR / "zone_statistics.md").write_text("\n".join(md_lines))
     print(f"Exported tables to {TABLES_DIR / 'zone_statistics.csv'} and {TABLES_DIR / 'zone_statistics.md'}")
 
-    # 5. Generate High-Resolution Cartographic Publication Figure
-    print("\nGenerating publication-quality cartographic map...")
+    # 5. Generate High-Resolution Cartographic Publication Figures (Clean & Overlay)
+    print("\nGenerating publication-quality cartographic maps...")
     dist_path = PROC / "district.gpkg"
     if not dist_path.exists():
         dist_path = MASTER_DIR / "district.gpkg"
@@ -262,24 +262,63 @@ def classify_susceptibility_zones():
     miny = maxy + H * T.e
     extent = (minx, maxx, miny, maxy)
 
-    fig, ax = plt.subplots(figsize=(10, 11), dpi=300)
-
-    # Plot zoned raster (masking value 0)
     masked_zone = np.ma.masked_equal(zone, 0)
     cmap = ListedColormap(ZONE_COLORS)
-    im = ax.imshow(masked_zone, cmap=cmap, vmin=1, vmax=5, extent=extent, interpolation="nearest", origin="upper")
 
-    # Plot district boundary
+    # Pure zone patches for clean legend
+    zone_patches = [
+        mpatches.Patch(facecolor=col, edgecolor="#333333", lw=0.5, label=f"{lab} ({interval})")
+        for lab, col, interval in zip(ZONE_LABELS, ZONE_COLORS, intervals)
+    ]
+
+    # --- 5A. Clean Susceptibility Map (No Training/Validation Point Markings) ---
+    fig_clean, ax_clean = plt.subplots(figsize=(10, 11), dpi=300)
+    ax_clean.imshow(masked_zone, cmap=cmap, vmin=1, vmax=5, extent=extent, interpolation="nearest", origin="upper")
+
+    if dist_gdf is not None:
+        dist_gdf.boundary.plot(ax=ax_clean, edgecolor="#111111", linewidth=1.2, zorder=5)
+
+    leg_clean = ax_clean.legend(handles=zone_patches, title="Susceptibility Classes (LSI)", loc="lower left",
+                                fontsize=9, title_fontsize=10, framealpha=0.94, facecolor="white",
+                                edgecolor="#999999", fancybox=True)
+    leg_clean.get_title().set_fontweight("bold")
+
+    add_scale_bar(ax_clean, length_km=10, location=(0.76, 0.05))
+    add_north_arrow(ax_clean, location=(0.94, 0.94))
+
+    ax_clean.set_title(f"Landslide Susceptibility Map of {DISTRICT} District, Kerala\n"
+                       f"Frequency Ratio Model (Fisher-Jenks Natural Breaks Classification)",
+                       fontsize=12, fontweight="bold", pad=12)
+    ax_clean.set_xlabel("Easting (m) - UTM Zone 43N [EPSG:32643]", fontsize=9.5)
+    ax_clean.set_ylabel("Northing (m) - UTM Zone 43N [EPSG:32643]", fontsize=9.5)
+    ax_clean.grid(color="gray", linestyle=":", linewidth=0.5, alpha=0.5)
+    ax_clean.ticklabel_format(style="plain", useOffset=False)
+    ax_clean.tick_params(labelsize=8)
+
+    plt.tight_layout()
+
+    clean_out_1 = OUT / "susceptibility_map.png"
+    clean_out_2 = OUT / "susceptibility_map_clean.png"
+    clean_out_3 = FIGURES_DIR / "susceptibility_map.png"
+    clean_out_4 = FIGURES_DIR / "susceptibility_map_clean.png"
+    clean_out_5 = FIGURES_DIR / "susceptibility_zones_jenks.png"
+
+    for p in (clean_out_1, clean_out_2, clean_out_3, clean_out_4, clean_out_5):
+        plt.savefig(p, dpi=300, bbox_inches="tight")
+    plt.close(fig_clean)
+
+    # --- 5B. Inventory Overlay Map (With Training, Validation & 2024 Benchmark Markings) ---
+    fig, ax = plt.subplots(figsize=(10, 11), dpi=300)
+    ax.imshow(masked_zone, cmap=cmap, vmin=1, vmax=5, extent=extent, interpolation="nearest", origin="upper")
+
     if dist_gdf is not None:
         dist_gdf.boundary.plot(ax=ax, edgecolor="#111111", linewidth=1.2, zorder=5)
 
-    # Plot landslide inventory overlay
     ax.scatter(train_xy[:, 0], train_xy[:, 1], c="#1a1a1a", edgecolors="white",
                s=18, linewidths=0.5, alpha=0.85, label=f"Training Slides (N={len(train_xy)})", zorder=6)
     ax.scatter(val_xy[:, 0], val_xy[:, 1], c="#ff00ff", edgecolors="black",
                marker="^", s=28, linewidths=0.6, alpha=0.95, label=f"Validation Slides (N={len(val_xy)})", zorder=7)
 
-    # Plot 2024 Chooralmala disaster initiation crown site
     lat_ch, lon_ch = 11.543, 76.155
     transformer = Transformer.from_crs("EPSG:4326", CRS, always_xy=True)
     ch_x, ch_y = transformer.transform(lon_ch, lat_ch)
@@ -291,15 +330,7 @@ def classify_susceptibility_zones():
                 bbox=dict(boxstyle="square,pad=0.25", facecolor="#fff8dc", edgecolor="#800000", lw=0.8, alpha=0.9),
                 zorder=9)
 
-    # Add zone patches for legend
-    legend_patches = []
-    for lab, col, interval in zip(ZONE_LABELS, ZONE_COLORS, intervals):
-        patch = mpatches.Patch(facecolor=col, edgecolor="#333333", lw=0.5, label=f"{lab} ({interval})")
-        legend_patches.append(patch)
-
-    legend_patches.append(mpatches.Patch(color="none", label=" "))  # spacer
-    # Combine legend handles
-    handles = list(legend_patches)
+    handles = list(zone_patches) + [mpatches.Patch(color="none", label=" ")]
     handles.append(plt.Line2D([0], [0], marker="o", color="none", markerfacecolor="#1a1a1a",
                               markeredgecolor="white", markersize=6, label=f"Training Slides (N={len(train_xy)})"))
     handles.append(plt.Line2D([0], [0], marker="^", color="none", markerfacecolor="#ff00ff",
@@ -312,33 +343,28 @@ def classify_susceptibility_zones():
                        edgecolor="#999999", fancybox=True)
     legend.get_title().set_fontweight("bold")
 
-    # Scale bar, north arrow, grid
     add_scale_bar(ax, length_km=10, location=(0.76, 0.05))
     add_north_arrow(ax, location=(0.94, 0.94))
 
     ax.set_title(f"Landslide Susceptibility Map of {DISTRICT} District, Kerala\n"
-                 f"Frequency Ratio Model (Fisher-Jenks Natural Breaks Classification)",
+                 f"Frequency Ratio Model (With Inventory & 2024 Benchmark Overlay)",
                  fontsize=12, fontweight="bold", pad=12)
     ax.set_xlabel("Easting (m) - UTM Zone 43N [EPSG:32643]", fontsize=9.5)
     ax.set_ylabel("Northing (m) - UTM Zone 43N [EPSG:32643]", fontsize=9.5)
-
-    # Coordinate grid lines
     ax.grid(color="gray", linestyle=":", linewidth=0.5, alpha=0.5)
     ax.ticklabel_format(style="plain", useOffset=False)
     ax.tick_params(labelsize=8)
 
     plt.tight_layout()
 
-    fig_out_1 = FIGURES_DIR / "susceptibility_map.png"
-    fig_out_2 = FIGURES_DIR / "susceptibility_zones_jenks.png"
-    fig_out_3 = OUT / "susceptibility_map.png"
+    overlay_out_1 = OUT / "susceptibility_map_with_points.png"
+    overlay_out_2 = FIGURES_DIR / "susceptibility_map_with_points.png"
+    plt.savefig(overlay_out_1, dpi=300, bbox_inches="tight")
+    plt.savefig(overlay_out_2, dpi=300, bbox_inches="tight")
+    plt.close(fig)
 
-    plt.savefig(fig_out_1, dpi=300, bbox_inches="tight")
-    plt.savefig(fig_out_2, dpi=300, bbox_inches="tight")
-    plt.savefig(fig_out_3, dpi=300, bbox_inches="tight")
-    plt.close()
-
-    print(f"Saved publication figures to:\n  - {fig_out_1}\n  - {fig_out_2}\n  - {fig_out_3}")
+    print(f"Saved clean susceptibility map to:\n  - {clean_out_1}\n  - {clean_out_2}")
+    print(f"Saved point-overlay map to:\n  - {overlay_out_1}")
 
     return {
         "zone": zone,

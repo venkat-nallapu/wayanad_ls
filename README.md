@@ -14,9 +14,9 @@
 
 ## Primary Deliverable: Landslide Susceptibility Zonation Map
 
-![Landslide Susceptibility Map of Wayanad District](outputs/susceptibility_map.png)
+![Landslide Susceptibility Map of Wayanad District](outputs/reports/figures/susceptibility_map_with_points.png)
 
-*Figure 1: Five-tier Landslide Susceptibility Zonation (LSZ) map of Wayanad District (`EPSG:32643`, 30 m grid resolution). The map displays Fisher-Jenks Natural Breaks zones, pre-2016 training and validation landslide points, and the blind out-of-sample July 30, 2024 Chooralmala disaster initiation point (`★`).*
+*Figure 1: Full five-tier Landslide Susceptibility Zonation (LSZ) map of Wayanad District (`EPSG:32643`, 30 m grid resolution) classified via Fisher-Jenks Natural Breaks without point markings. (See [`outputs/susceptibility_map_with_points.png`](outputs/susceptibility_map_with_points.png) for the inventory and 2024 Chooralmala benchmark overlay).*
 
 ---
 
